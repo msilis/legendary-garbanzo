@@ -1,0 +1,57 @@
+---
+import "../assets/app.css";
+import Navbar from "../components/Navbar.astro";
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="generator" content={Astro.generator} />
+        <meta name="description" content="Therapy site template" />
+        <title>Silis Brothers Animation</title>
+        <script is:inline>
+            (function () {
+                const theme = localStorage.getItem("colour-mode");
+                if (theme === "dark") {
+                    document.documentElement.classList.add("dark");
+                } else if (theme === "light") {
+                    document.documentElement.classList.add("light");
+                }
+            })();
+        </script>
+    </head>
+    <body>
+        <main class="content-wrapper">
+            <Navbar />
+            <slot />
+        </main>
+    </body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition:
+            background-color 0.3s ease,
+            color 0.3s ease;
+    }
+    .content-wrapper {
+        flex-grow: 1;
+    }
+    @media (prefers-color-scheme: dark) {
+        html:not(.light) {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+        }
+    }
+</style>

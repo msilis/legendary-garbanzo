@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+    --font-cyberblast: "CyberBlast", sans-serif;
+}
+
+@font-face {
+    font-family: "CyberBlast";
+    src: url("src/assets/fonts/cyber_blast.woff2") format("woff2");
+    font-display: swap;
+    font-weight: 400;
+}
