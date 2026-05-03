@@ -7,11 +7,13 @@ import Layout from "../layouts/Layout.astro";
         <h2 class="font-cyberblast text-7xl ml-8 mt-4">Upload</h2>
         <form
             class="outline-2 outline-amber-500 w-[70%] mt-16 ml-auto mr-auto p-16 flex flex-col gap-6 rounded-2xl"
+            id="upload-form"
         >
             <div class="flex flex-col gap-2">
                 <label>Enter the name of the clip</label>
                 <input
                     type="text"
+                    name="name"
                     placeholder="Enter title"
                     class="input input-lg w-[70%]"
                 />
@@ -20,6 +22,7 @@ import Layout from "../layouts/Layout.astro";
                 <label>Who made the movie?</label>
                 <input
                     type="text"
+                    name="who"
                     placeholder="Enter names"
                     class="input input-lg w-[70%]"
                 />
@@ -27,9 +30,49 @@ import Layout from "../layouts/Layout.astro";
             <div class="flex flex-col gap-2">
                 <input
                     type="file"
+                    accept="video/mp4"
                     class="file-input file-input-primary file-input-xl"
+                    required
                 />
             </div>
+            <button type="submit" class="btn btn-accent btn-xl">Upload!</button>
         </form>
+        <p id="status" class="text-center mt-4 hidden"></p>
     </div>
 </Layout>
+
+<script>
+    const uploadForm = document.getElementById(
+        "upload-form",
+    ) as HTMLFormElement;
+    const status = document.getElementById("status") as HTMLParagraphElement;
+
+    uploadForm?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        status?.classList.add("hidden");
+
+        const formData = new FormData(uploadForm);
+
+        try {
+            const response = await fetch("/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (response.ok) {
+                status.textContent = "Video uploaded successfully!";
+                status.className = "text-center mt-4 text-green-600";
+                uploadForm.reset();
+            } else {
+                const error = await response.text();
+                status.textContent = error || "Upload failed";
+                status.className = "text-center mt-4 text-red-600";
+            }
+        } catch (error) {
+            status.textContent = "Network Error";
+            status.className = "text-center mt-4 text-red-600";
+            console.error("There was an error uploading the video: ", error);
+        }
+        status.classList.remove("hidden");
+    });
+</script>
