@@ -10,7 +10,10 @@ export const onRequestGet = async (
 ) => {
   const { env } = context;
 
-  const objects = await env.BUCKET.list({ prefix: "animations/" });
+  const objects = await env.BUCKET.list({
+    prefix: "animations/",
+    include: ["customMetadata"],
+  });
 
   const videos = objects.objects.map((obj) => {
     console.log("OBJECT:", JSON.stringify(obj));
