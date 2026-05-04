@@ -14,7 +14,7 @@ export const onRequestGet = async (
 
   const videos = objects.objects.map((obj) => ({
     key: obj.key,
-    url: `${env.CLOUDFLARE_DEVELOPMENT_URL}/${obj.key}`, // or your public R2 URL
+    url: `${env.CLOUDFLARE_DEVELOPMENT_URL}/${obj.key}`,
     title: obj.customMetadata?.title || obj.key,
     who: obj.customMetadata?.who || "Unknown",
     uploadedAt: obj.customMetadata?.uploadedAt,
