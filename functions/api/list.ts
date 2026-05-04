@@ -13,7 +13,7 @@ export const onRequestGet = async (
   const objects = await env.BUCKET.list({ prefix: "animations/" });
 
   const videos = objects.objects.map((obj) => {
-    console.log("Metadata for", obj.key, ":", obj.customMetadata);
+    console.log("OBJECT:", obj);
     return {
       key: obj.key,
       url: `${env.CLOUDFLARE_DEVELOPMENT_URL}/${obj.key}`,
