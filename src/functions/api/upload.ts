@@ -1,4 +1,4 @@
-import type { R2Bucket, ReadableStream } from "@cloudflare/workers-types";
+import type { R2Bucket } from "@cloudflare/workers-types";
 
 interface Env {
   BUCKET: R2Bucket;
