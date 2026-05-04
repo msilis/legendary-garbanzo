@@ -12,13 +12,16 @@ export const onRequestGet = async (
 
   const objects = await env.BUCKET.list({ prefix: "animations/" });
 
-  const videos = objects.objects.map((obj) => ({
-    key: obj.key,
-    url: `${env.CLOUDFLARE_DEVELOPMENT_URL}/${obj.key}`,
-    title: obj.customMetadata?.title || obj.key,
-    who: obj.customMetadata?.who || "Unknown",
-    uploadedAt: obj.customMetadata?.uploadedAt,
-  }));
+  const videos = objects.objects.map((obj) => {
+    console.log("Metadata for", obj.key, ":", obj.customMetadata);
+    return {
+      key: obj.key,
+      url: `${env.CLOUDFLARE_DEVELOPMENT_URL}/${obj.key}`,
+      title: obj.customMetadata?.title || obj.key,
+      who: obj.customMetadata?.who || "Unknown",
+      uploadedAt: obj.customMetadata?.uploadedAt,
+    };
+  });
 
   return new Response(JSON.stringify(videos), {
     headers: { "Content-Type": "application/json" },
