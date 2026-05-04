@@ -7,7 +7,7 @@
 
 @font-face {
     font-family: "CyberBlast";
-    src: url("src/assets/fonts/cyber_blast.woff2") format("woff2");
+    src: url("/fonts/cyber_blast.woff2") format("woff2");
     font-display: swap;
     font-weight: 400;
 }
