@@ -27,8 +27,6 @@ export const onRequestPost = async (
 
   const key = `animations/${Date.now()}-${file.name}`;
 
-  console.log({ file, title, who });
-
   // @ts-ignore - DOM ReadableStream is compatible at runtime
   await env.BUCKET.put(key, file.stream(), {
     httpMetadata: {
