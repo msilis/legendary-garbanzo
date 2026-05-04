@@ -9,7 +9,7 @@ export default {
   async fetch(request: Request, env: Env) {
     const url = new URL(request.url);
 
-    if (url.pathname === "/api/upload" && request.method === "POST") {
+    if (url.pathname === "/functions/api/upload" && request.method === "POST") {
       const formData = await request.formData();
       const pin = formData.get("pin");
 
