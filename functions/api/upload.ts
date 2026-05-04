@@ -1,40 +1,43 @@
-import type { R2Bucket } from "@cloudflare/workers-types";
+import type { R2Bucket, EventContext } from "@cloudflare/workers-types";
 
 interface Env {
   BUCKET: R2Bucket;
   FAMILY_PIN: string;
 }
 
-export default {
-  async fetch(request: Request, env: Env) {
-    const url = new URL(request.url);
+export const onRequestPost = async (
+  context: EventContext<Env, any, Record<string, unknown>>,
+) => {
+  const { request, env } = context;
 
-    if (url.pathname === "/api/upload" && request.method === "POST") {
-      const formData = await request.formData();
-      const pin = formData.get("pin");
+  const formData = await request.formData();
+  const pin = formData.get("pin");
 
-      if (pin !== env.FAMILY_PIN) {
-        return new Response("Invalid pin", { status: 401 });
-      }
-      const file = formData.get("video") as File;
-      const title = formData.get("title");
-      const who = formData.get("who");
+  if (pin !== env.FAMILY_PIN) {
+    return new Response("Invalid pin", { status: 401 });
+  }
 
-      const key = `animations/${Date.now()}-${file?.name}`;
+  const file = formData.get("video") as File | null;
+  if (!file || !(file instanceof File)) {
+    return new Response("No video file provided", { status: 400 });
+  }
 
-      // @ts-ignore - DOM ReadableStream is compatible at runtime
-      await env.BUCKET.put(key, file?.stream(), {
-        httpMetadata: {
-          contentType: file.type,
-        },
-        customMetadata: {
-          title,
-          who,
-          uploadedAt: new Date().toISOString(),
-        },
-      });
-      return new Response(`Uploaded ${key}`, { status: 200 });
-    }
-    return new Response("Invalid request", { status: 400 });
-  },
+  const title = (formData.get("title") as string) || file.name;
+  const who = formData.get("who") as string;
+
+  const key = `animations/${Date.now()}-${file.name}`;
+
+  // @ts-ignore - DOM ReadableStream is compatible at runtime
+  await env.BUCKET.put(key, file.stream(), {
+    httpMetadata: {
+      contentType: file.type,
+    },
+    customMetadata: {
+      title,
+      who,
+      uploadedAt: new Date().toISOString(),
+    },
+  });
+
+  return new Response(`Uploaded ${key}`, { status: 200 });
 };
