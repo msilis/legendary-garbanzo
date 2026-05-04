@@ -1,7 +1,7 @@
 import type { R2Bucket, EventContext } from "@cloudflare/workers-types";
 
 interface Env {
-  CLOUDFLARE_BUCKET_NAME: R2Bucket;
+  BUCKET: R2Bucket;
   FAMILY_PIN: string;
 }
 
@@ -28,7 +28,7 @@ export const onRequestPost = async (
   const key = `animations/${Date.now()}-${file.name}`;
 
   // @ts-ignore - DOM ReadableStream is compatible at runtime
-  await env.CLOUDFLARE_BUCKET_NAME.put(key, file.stream(), {
+  await env.BUCKET.put(key, file.stream(), {
     httpMetadata: {
       contentType: file.type,
     },
