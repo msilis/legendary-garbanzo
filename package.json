@@ -21,5 +21,6 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260504.1"
-  }
+  },
+  "packageManager": "yarn@4.5.0"
 }
