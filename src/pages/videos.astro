@@ -28,7 +28,7 @@ import Layout from "../layouts/Layout.astro";
             data.forEach(
                 (video: {
                     key: string;
-                    file: string;
+                    url: string;
                     title: string;
                     who: string;
                 }) => {
@@ -37,7 +37,7 @@ import Layout from "../layouts/Layout.astro";
                     card.innerHTML = `
                   <figure>
                       <video
-                        src="${video.file}"
+                        src="${video.url}"
                         alt="${video.title}"
                         controls />
                     </figure>
