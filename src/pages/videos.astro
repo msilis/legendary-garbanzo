@@ -4,10 +4,55 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout>
     <h2 class="font-cyberblast text-7xl ml-8 mt-4">Videos</h2>
+    <div id="loading">Loading videos...</div>
+    <div id="videoList" class="grid grid-cols-1 ml-8 mt-4"></div>
 </Layout>
 
 <script>
-    const response = await fetch("/api/list");
-    const data = await response.json();
-    console.log("Bucket data: ", data);
+    async function loadVideos() {
+        const listContainer = document.querySelector(
+            "#videoList",
+        ) as HTMLElement;
+        const loadingContainer = document.querySelector(
+            "#loading",
+        ) as HTMLElement;
+
+        try {
+            const response = await fetch("/api/list");
+            if (!response.ok) throw new Error("Failed to fetch videos");
+            const data = await response.json();
+            if (loadingContainer) loadingContainer.style.display = "none";
+
+            console.log(data, "data from video");
+
+            data.forEach(
+                (video: {
+                    key: string;
+                    file: string;
+                    title: string;
+                    who: string;
+                }) => {
+                    const card = document.createElement("div");
+                    card.className = "card bg-base-100 w-96 shadow-sm";
+                    card.innerHTML = `
+                  <figure>
+                      <video
+                        src="${video.file}"
+                        alt="${video.title}"
+                        controls />
+                    </figure>
+                    <div class="card-body">
+                      <h2 class="card-title">${video.title}</h2>
+                      <p>Made by: ${video.who}</p>
+
+                    </div>
+                  `;
+                    listContainer.appendChild(card);
+                },
+            );
+        } catch (err) {
+            console.error("There was an error loading videos: ", err);
+        }
+    }
+    loadVideos();
 </script>
