@@ -5,7 +5,11 @@ import Layout from "../layouts/Layout.astro";
 <Layout>
     <h2 class="font-cyberblast text-7xl ml-8 mt-4">Videos</h2>
     <div id="loading">Loading videos...</div>
-    <div id="videoList" class="grid grid-cols-3 gap-5 ml-8 mt-4"></div>
+    <div
+        id="videoList"
+        class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ml-8 mt-4 gap-3"
+    >
+    </div>
 </Layout>
 
 <script>
@@ -22,8 +26,6 @@ import Layout from "../layouts/Layout.astro";
             if (!response.ok) throw new Error("Failed to fetch videos");
             const data = await response.json();
             if (loadingContainer) loadingContainer.style.display = "none";
-
-            console.log(data, "data from video");
 
             data.forEach(
                 (video: {

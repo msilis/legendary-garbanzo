@@ -5,8 +5,11 @@ import Layout from "../layouts/Layout.astro";
 <Layout>
     <div>
         <h2 class="font-cyberblast text-7xl ml-8 mt-4">Upload</h2>
+        <div class="shimmer" id="loadingState">
+            <p class="text-center text-green-400 text-lg">Loading...</p>
+        </div>
         <form
-            class="outline-2 outline-amber-500 w-[70%] mt-16 ml-auto mr-auto p-16 flex flex-col gap-6 rounded-2xl"
+            class="outline-2 outline-amber-500 w-[70%] mt-8 ml-auto mr-auto p-16 flex flex-col gap-6 rounded-2xl"
             id="upload-form"
         >
             <div class="flex flex-col gap-2">
@@ -54,16 +57,39 @@ import Layout from "../layouts/Layout.astro";
     </div>
 </Layout>
 
+<style>
+    .shimmer {
+        color: grey;
+        display: block;
+        mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/350% 100%;
+        animation: shimmer 2.5s infinite;
+        font-size: 50px;
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+        visibility: hidden;
+    }
+
+    @keyframes shimmer {
+        100% {
+            mask-position: left;
+        }
+    }
+</style>
+
 <script>
     const uploadForm = document.getElementById(
         "upload-form",
     ) as HTMLFormElement;
     const status = document.getElementById("status") as HTMLParagraphElement;
+    const loadingElement = document.getElementById(
+        "loadingState",
+    ) as HTMLParagraphElement;
 
     uploadForm?.addEventListener("submit", async (e) => {
         e.preventDefault();
         status?.classList.add("hidden");
-
+        loadingElement.style.visibility = "visible";
         const formData = new FormData(uploadForm);
 
         try {
@@ -87,5 +113,6 @@ import Layout from "../layouts/Layout.astro";
             console.error("There was an error uploading the video: ", error);
         }
         status.classList.remove("hidden");
+        loadingElement.style.visibility = "hidden";
     });
 </script>
