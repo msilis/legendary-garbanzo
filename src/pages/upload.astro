@@ -91,7 +91,7 @@ import Layout from "../layouts/Layout.astro";
         status?.classList.add("hidden");
         loadingElement.style.visibility = "visible";
         const formData = new FormData(uploadForm);
-        const file = formData.get("file") as File;
+        const file = formData.get("video") as File;
 
         try {
             const authResponse = await fetch("/api/upload", {
