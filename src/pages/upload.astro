@@ -91,22 +91,28 @@ import Layout from "../layouts/Layout.astro";
         status?.classList.add("hidden");
         loadingElement.style.visibility = "visible";
         const formData = new FormData(uploadForm);
+        const file = formData.get("file") as File;
 
         try {
-            const response = await fetch("/api/upload", {
+            const authResponse = await fetch("/api/upload", {
                 method: "POST",
-                body: formData,
+                body: JSON.stringify({
+                    title: formData.get("title"),
+                    who: formData.get("who"),
+                    filename: file.name,
+                    contentType: file.type,
+                    pin: formData.get("pin"),
+                }),
             });
 
-            if (response.ok) {
-                status.textContent = "Video uploaded successfully!";
-                status.className = "text-center mt-4 text-green-600";
-                uploadForm.reset();
-            } else {
-                const error = await response.text();
-                status.textContent = error || "Upload failed";
-                status.className = "text-center mt-4 text-red-600";
-            }
+            const { url } = await authResponse.json();
+            const uploadResponse = await fetch(url, {
+                method: "PUT",
+                body: file,
+                headers: { "Content-Type": file.type },
+            });
+
+            if (uploadResponse.ok) alert("Video uploaded");
         } catch (error) {
             status.textContent = "Network Error";
             status.className = "text-center mt-4 text-red-600";
