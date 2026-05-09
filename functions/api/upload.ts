@@ -14,7 +14,7 @@ interface Env {
 interface UploadRequest {
   title: string;
   who: string;
-  file: File;
+  fileName: File;
   contentType: string;
   pin: string;
 }
