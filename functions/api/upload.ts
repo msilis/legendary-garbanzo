@@ -1,13 +1,14 @@
 import type { R2Bucket, EventContext } from "@cloudflare/workers-types";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import type { ZodString } from "astro:schema";
 
 interface Env {
   BUCKET: R2Bucket;
   FAMILY_PIN: string;
-  R2_ACCESS_KEY_ID: string;
-  R2_SECRET_ACCESS_KEY: string;
-  R2_ACCOUNT_ID: string;
+  CLOUDFLARE_ACCESS_KEY_ID: string;
+  CLOUDFLARE_SECRET_KEY: string;
+  CLOUDFLARE_ID: string;
 }
 
 interface UploadRequest {
@@ -23,10 +24,10 @@ export const onRequestPost = async (
 ) => {
   const { request, env } = context;
 
-  const formData = await request.formData();
-
-  const { title, who, file, contentType, pin } =
+  const { title, who, fileName, contentType, pin } =
     (await request.json()) as UploadRequest;
+
+  console.log({ title, who, contentType, fileName });
 
   if (pin !== env.FAMILY_PIN) {
     return new Response("Invalid pin", { status: 401 });
@@ -34,20 +35,19 @@ export const onRequestPost = async (
 
   const s3 = new S3Client({
     region: "auto",
-    endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    endpoint: `https://${env.CLOUDFLARE_ID}.r2.cloudflarestorage.com`,
     credentials: {
-      accessKeyId: env.R2_ACCESS_KEY_ID,
-      secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+      accessKeyId: env.CLOUDFLARE_ACCESS_KEY_ID,
+      secretAccessKey: env.CLOUDFLARE_SECRET_KEY,
     },
   });
 
-  const key = `animations/${Date.now()}-${file.name}`;
+  const key = `animations/${Date.now()}-${fileName}`;
 
   const command = new PutObjectCommand({
     Bucket: "august-archie",
     Key: key,
-    Body: file.stream(),
-    ContentType: file.type,
+    ContentType: contentType,
     Metadata: {
       title,
       who,
@@ -56,6 +56,7 @@ export const onRequestPost = async (
   });
 
   const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+  console.log(url, "presigned url");
   return new Response(JSON.stringify({ url, key }), {
     headers: {
       ContentType: "application/json",

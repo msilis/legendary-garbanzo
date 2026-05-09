@@ -92,6 +92,7 @@ import Layout from "../layouts/Layout.astro";
         loadingElement.style.visibility = "visible";
         const formData = new FormData(uploadForm);
         const file = formData.get("video") as File;
+        console.log(file, "file from uploadForm");
 
         try {
             const authResponse = await fetch("/api/upload", {
@@ -99,7 +100,8 @@ import Layout from "../layouts/Layout.astro";
                 body: JSON.stringify({
                     title: formData.get("title"),
                     who: formData.get("who"),
-                    filename: file.name,
+                    fileName: file.name,
+                    fileType: file.type,
                     contentType: file.type,
                     pin: formData.get("pin"),
                 }),
