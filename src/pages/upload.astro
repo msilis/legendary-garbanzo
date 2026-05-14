@@ -91,10 +91,16 @@ import Layout from "../layouts/Layout.astro";
         status?.classList.add("hidden");
         loadingElement.style.visibility = "visible";
         const formData = new FormData(uploadForm);
-        const file = formData.get("video") as File;
-        console.log(file, "file from uploadForm");
-        console.log(formData.get("title"), "title");
-        console.log(formData.get("who"), "who");
+        const fileInput = uploadForm.querySelector(
+            'input[type="file"]',
+        ) as HTMLInputElement;
+        const file = fileInput?.files?.[0];
+
+        if (!file) {
+            status.textContent = "Please select a video file first.";
+            status.classList.remove("hidden");
+            return;
+        }
 
         try {
             const authResponse = await fetch("/api/upload", {
