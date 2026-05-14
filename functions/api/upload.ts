@@ -54,7 +54,6 @@ export const onRequestPost = async (
   });
 
   const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-  console.log(url, "presigned url");
   return new Response(JSON.stringify({ url, key }), {
     headers: {
       ContentType: "application/json",

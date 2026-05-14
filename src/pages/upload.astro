@@ -35,7 +35,7 @@ import Layout from "../layouts/Layout.astro";
             <div class="flex flex-col gap-2">
                 <input
                     type="file"
-                    name="video"
+                    name="file"
                     accept="video/mp4"
                     class="file-input file-input-primary file-input-xl"
                     required
@@ -91,7 +91,7 @@ import Layout from "../layouts/Layout.astro";
         status?.classList.add("hidden");
         loadingElement.style.visibility = "visible";
         const formData = new FormData(uploadForm);
-        const file = formData.get("video") as File;
+        const file = formData.get("file") as File;
 
         if (!file || !(file instanceof File) || file.size === 0) {
             alert("Please select a video file.");
