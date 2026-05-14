@@ -49,7 +49,6 @@ export const onRequestPost = async (
     Metadata: {
       title,
       who,
-      uploadedAt: new Date().toISOString(),
     },
   });
 
