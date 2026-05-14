@@ -1,7 +1,6 @@
 import type { R2Bucket, EventContext } from "@cloudflare/workers-types";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import type { ZodString } from "astro:schema";
 
 interface Env {
   BUCKET: R2Bucket;

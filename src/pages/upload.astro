@@ -91,14 +91,10 @@ import Layout from "../layouts/Layout.astro";
         status?.classList.add("hidden");
         loadingElement.style.visibility = "visible";
         const formData = new FormData(uploadForm);
-        const fileInput = uploadForm.querySelector(
-            'input[type="file"]',
-        ) as HTMLInputElement;
-        const file = fileInput?.files?.[0];
+        const file = formData.get("video") as File;
 
-        if (!file) {
-            status.textContent = "Please select a video file first.";
-            status.classList.remove("hidden");
+        if (!file || !(file instanceof File) || file.size === 0) {
+            alert("Please select a video file.");
             return;
         }
 
